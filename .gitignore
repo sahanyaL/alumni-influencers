@@ -1,0 +1,11 @@
+/user_guide/
+
+application/logs/*
+application/cache/*
+!application/logs/index.html
+!application/cache/index.html
+
+application/config/database.php
+
+Thumbs.db
+.DS_Store
