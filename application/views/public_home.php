@@ -31,8 +31,10 @@
 
     <div class="search-box">
         <h3>Find an Alumnus</h3>
-        <input type="text" placeholder="Search by name, degree, or company...">
-        <button>Search</button>
+        <form action="<?php echo base_url('index.php/home/search'); ?>" method="GET">
+            <input type="text" name="q" placeholder="Search by name, degree, or job..." required>
+            <button type="submit">Search</button>
+        </form>
     </div>
 
     <p><a href="<?php echo base_url('index.php/auth/login'); ?>">Alumni Login</a></p>

@@ -20,4 +20,22 @@ class Marketplace_model extends CI_Model {
         $this->db->limit($limit);
         return $this->db->get()->result();
     }
+
+    public function search_alumni($query) {
+        $this->db->select('profiles.user_id, profiles.full_name, profiles.bio');
+        $this->db->from('profiles');
+        
+        $this->db->join('degrees', 'degrees.user_id = profiles.user_id', 'left');
+        $this->db->join('employment', 'employment.user_id = profiles.user_id', 'left');
+
+        $this->db->group_start();
+            $this->db->like('profiles.full_name', $query);
+            $this->db->or_like('profiles.bio', $query);
+            $this->db->or_like('degrees.degree_name', $query);
+            $this->db->or_like('employment.job_title', $query);
+        $this->db->group_end();
+
+        $this->db->distinct();
+        return $this->db->get()->result();
+    }
 }

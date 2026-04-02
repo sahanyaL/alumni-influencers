@@ -22,4 +22,18 @@ class Home extends CI_Controller {
 
         $this->load->view('public_profile_view', $data);
     }
+    public function search() {
+        $search_query = $this->input->get('q');
+        $this->load->model('Marketplace_model');
+
+        if (!empty($search_query)) {
+            $data['results'] = $this->Marketplace_model->search_alumni($search_query);
+            $data['query'] = $search_query;
+        } else {
+            $data['results'] = array();
+            $data['query'] = "";
+        }
+
+        $this->load->view('search_results_view', $data);
+    }
 }
