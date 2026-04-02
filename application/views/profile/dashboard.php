@@ -4,20 +4,76 @@
     <title>Alumni Dashboard</title>
 </head>
 <body>
-    <h1>Welcome, <?php echo $this->session->userdata('email'); ?></h1>
-    
-    <h3>Your Profile</h3>
-    <p>Bio: <?php echo $profile->bio ? $profile->bio : 'Not set'; ?></p>
-    <p>LinkedIn: <a href="<?php echo $profile->linkedin_url; ?>"><?php echo $profile->linkedin_url; ?></a></p>
+    <h1>Alumni Dashboard</h1>
+    <p>Logged in as: <strong><?php echo $this->session->userdata('email'); ?></strong></p>
+    <hr>
 
-    <h3>Your Degrees</h3>
-    <ul>
-        <?php foreach($degrees as $degree): ?>
-            <li><?php echo $degree->degree_name; ?> (<?php echo $degree->completion_date; ?>)</li>
-        <?php endforeach; ?>
-    </ul>
+    <h2>Personal Information</h2>
+    <p><strong>Full Name:</strong> <?php echo $profile->full_name ? $profile->full_name : 'Not set'; ?></p>
+    <p><strong>Bio:</strong> <?php echo $profile->bio ? $profile->bio : 'No biography added yet.'; ?></p>
+    <p><strong>LinkedIn:</strong> 
+        <?php if($profile->linkedin_url): ?>
+            <a href="<?php echo $profile->linkedin_url; ?>" target="_blank"><?php echo $profile->linkedin_url; ?></a>
+        <?php else: ?>
+            Not set
+        <?php endif; ?>
+    </p>
 
-    <a href="<?php echo base_url('index.php/profile/edit'); ?>">Edit Profile</a> | 
-    <a href="<?php echo base_url('index.php/auth/logout'); ?>">Logout</a>
+    <hr>
+
+    <h2>Degrees</h2>
+    <?php if(empty($degrees)): ?>
+        <p>No degrees added.</p>
+    <?php else: ?>
+        <ul>
+            <?php foreach($degrees as $degree): ?>
+                <li>
+                    <strong><?php echo $degree->degree_name; ?></strong> 
+                    (Completed: <?php echo $degree->completion_date; ?>)<br>
+                    <small><a href="<?php echo $degree->university_url; ?>" target="_blank">Official Course Page</a></small>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
+    <hr>
+
+    <h2>Professional Certifications</h2>
+    <?php if(empty($certifications)): ?>
+        <p>No certifications added.</p>
+    <?php else: ?>
+        <ul>
+            <?php foreach($certifications as $cert): ?>
+                <li>
+                    <strong><?php echo $cert->cert_name; ?></strong> 
+                    (Date: <?php echo $cert->completion_date; ?>)<br>
+                    <small><a href="<?php echo $cert->course_url; ?>" target="_blank">View Certificate/Course</a></small>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
+    <hr>
+
+    <h2>Professional Licences</h2>
+    <?php if(empty($licences)): ?>
+        <p>No licences added.</p>
+    <?php else: ?>
+        <ul>
+            <?php foreach($licences as $licence): ?>
+                <li>
+                    <strong><?php echo $licence->licence_name; ?></strong> 
+                    (Issued: <?php echo $licence->completion_date; ?>)<br>
+                    <small><a href="<?php echo $licence->awarding_body_url; ?>" target="_blank">Awarding Body</a></small>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
+    <br>
+    <div style="margin-top: 20px; padding: 10px; background: #f4f4f4;">
+        <a href="<?php echo base_url('index.php/profile/edit'); ?>">Edit My Profile</a> | 
+        <a href="<?php echo base_url('index.php/auth/logout'); ?>" style="color: red;">Logout</a>
+    </div>
 </body>
 </html>

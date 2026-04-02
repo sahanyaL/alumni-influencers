@@ -16,8 +16,11 @@ class Profile extends CI_Controller {
 
     public function dashboard() {
         $user_id = $this->session->userdata('user_id');
+        
         $data['profile'] = $this->Profile_model->get_profile($user_id);
         $data['degrees'] = $this->Profile_model->get_degrees($user_id);
+        $data['certifications'] = $this->Profile_model->get_certifications($user_id);
+        $data['licences'] = $this->Profile_model->get_licences($user_id);
         
         $this->load->view('profile/dashboard', $data);
     }
@@ -67,6 +70,39 @@ class Profile extends CI_Controller {
             
             $this->load->model('Profile_model');
             $this->Profile_model->insert_degree($degree_data);
+            redirect('profile/dashboard');
+        }
+    }
+    public function add_certification() {
+        $this->form_validation->set_rules('cert_name', 'Certification Name', 'required');
+        $this->form_validation->set_rules('course_url', 'Course URL', 'required|valid_url');
+        $this->form_validation->set_rules('completion_date', 'Completion Date', 'required');
+
+        if ($this->form_validation->run() == TRUE) {
+            $data = array(
+                'user_id' => $this->session->userdata('user_id'),
+                'cert_name' => $this->input->post('cert_name'),
+                'course_url' => $this->input->post('course_url'),
+                'completion_date' => $this->input->post('completion_date')
+            );
+            $this->Profile_model->insert_certification($data);
+            redirect('profile/dashboard');
+        }
+    }
+
+    public function add_licence() {
+        $this->form_validation->set_rules('licence_name', 'Licence Name', 'required');
+        $this->form_validation->set_rules('awarding_body_url', 'Awarding Body URL', 'required|valid_url');
+        $this->form_validation->set_rules('completion_date', 'Completion Date', 'required');
+
+        if ($this->form_validation->run() == TRUE) {
+            $data = array(
+                'user_id' => $this->session->userdata('user_id'),
+                'licence_name' => $this->input->post('licence_name'),
+                'awarding_body_url' => $this->input->post('awarding_body_url'),
+                'completion_date' => $this->input->post('completion_date')
+            );
+            $this->Profile_model->insert_licence($data);
             redirect('profile/dashboard');
         }
     }

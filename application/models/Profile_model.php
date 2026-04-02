@@ -16,4 +16,19 @@ class Profile_model extends CI_Model {
     public function insert_degree($data) {
         return $this->db->insert('degrees', $data);
     }
+    public function get_certifications($user_id) {
+        return $this->db->get_where('certifications', array('user_id' => $user_id))->result();
+    }
+
+    public function get_licences($user_id) {
+        return $this->db->get_where('licences', array('user_id' => $user_id))->result();
+    }
+
+    public function insert_certification($data) {
+        return $this->db->insert('certifications', $data);
+    }
+
+    public function insert_licence($data) {
+        return $this->db->insert('licences', $data);
+    }
 }

@@ -46,5 +46,29 @@
         <?php echo form_close(); ?>
     </fieldset>
 
+    <br><hr><br>
+
+    <fieldset>
+        <legend><h3>Add a Professional Certification</h3></legend>
+        <?php echo form_open('profile/add_certification'); ?>
+            <input type="text" name="cert_name" placeholder="Certification Name" required><br><br>
+            <input type="text" name="course_url" placeholder="Course URL" required><br><br>
+            <input type="date" name="completion_date" required><br><br>
+            <button type="submit">Add Certification</button>
+        <?php echo form_close(); ?>
+    </fieldset>
+
+    <br><hr><br>
+
+    <fieldset>
+        <legend><h3>Add a Professional Licence</h3></legend>
+        <?php echo form_open('profile/add_licence'); ?>
+            <input type="text" name="licence_name" placeholder="Licence Name" required><br><br>
+            <input type="text" name="awarding_body_url" placeholder="Awarding Body URL" required><br><br>
+            <input type="date" name="completion_date" required><br><br>
+            <button type="submit">Add Licence</button>
+        <?php echo form_close(); ?>
+    </fieldset>
+
 </body>
 </html>
