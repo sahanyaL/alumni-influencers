@@ -86,9 +86,19 @@
     <?php endif; ?>
 
     <br>
-    <div style="margin-top: 20px; padding: 10px; background: #f4f4f4;">
+    <div style="margin-top: 20px; padding: 10px;">
         <a href="<?php echo base_url('index.php/profile/edit'); ?>">Edit My Profile</a> | 
         <a href="<?php echo base_url('index.php/auth/logout'); ?>" style="color: red;">Logout</a>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; border: 1px solid #333;">
+        <h3>Featured Visibility</h3>
+        <p>Place a bid in the marketplace to compete for a top-3 spot on the homepage.</p>
+        
+        <a href="<?php echo base_url('index.php/marketplace'); ?>" 
+        style="display: inline-block; padding: 8px 16px; border: 1px solid #333; text-decoration: none; color: #000; font-weight: bold;">
+        OPEN MARKETPLACE
+        </a>
     </div>
 </body>
 </html>
