@@ -70,5 +70,34 @@
         <?php echo form_close(); ?>
     </fieldset>
 
+    <br><hr><br>
+    <fieldset>
+        <legend><h3>Add Employment History</h3></legend>
+        <?php echo form_open('profile/add_employment'); ?>
+            <input type="text" name="company_name" placeholder="Company Name" required><br><br>
+            <input type="text" name="job_title" placeholder="Job Title (e.g. Software Engineer)" required><br><br>
+            
+            <label>Start Date:</label>
+            <input type="date" name="start_date" required><br><br>
+
+            <label>
+                <input type="checkbox" name="currently_working" id="current_job" value="1"> I currently work here
+            </label><br><br>
+
+            <div id="end_date_section">
+                <label>End Date:</label>
+                <input type="date" name="end_date"><br><br>
+            </div>
+
+            <button type="submit">Add Employment</button>
+        <?php echo form_close(); ?>
+    </fieldset>
+
+    <script>
+        document.getElementById('current_job').onchange = function() {
+            document.getElementById('end_date_section').style.display = this.checked ? 'none' : 'block';
+        };
+    </script>
+
 </body>
 </html>

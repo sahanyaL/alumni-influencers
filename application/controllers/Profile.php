@@ -21,6 +21,7 @@ class Profile extends CI_Controller {
         $data['degrees'] = $this->Profile_model->get_degrees($user_id);
         $data['certifications'] = $this->Profile_model->get_certifications($user_id);
         $data['licences'] = $this->Profile_model->get_licences($user_id);
+        $data['employment'] = $this->Profile_model->get_employment($user_id);
         
         $this->load->view('profile/dashboard', $data);
     }
@@ -103,6 +104,27 @@ class Profile extends CI_Controller {
                 'completion_date' => $this->input->post('completion_date')
             );
             $this->Profile_model->insert_licence($data);
+            redirect('profile/dashboard');
+        }
+    }
+    public function add_employment() {
+        $this->form_validation->set_rules('company_name', 'Company Name', 'required');
+        $this->form_validation->set_rules('job_title', 'Job Title', 'required');
+        $this->form_validation->set_rules('start_date', 'Start Date', 'required');
+
+        if ($this->form_validation->run() == TRUE) {
+            $currently_working = $this->input->post('currently_working') ? 1 : 0;
+            
+            $data = array(
+                'user_id' => $this->session->userdata('user_id'),
+                'company_name' => $this->input->post('company_name'),
+                'job_title' => $this->input->post('job_title'),
+                'start_date' => $this->input->post('start_date'),
+                'end_date' => $currently_working ? NULL : $this->input->post('end_date'),
+                'currently_working' => $currently_working
+            );
+            
+            $this->Profile_model->insert_employment($data);
             redirect('profile/dashboard');
         }
     }

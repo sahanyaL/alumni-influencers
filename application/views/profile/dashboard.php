@@ -70,6 +70,21 @@
         </ul>
     <?php endif; ?>
 
+    <h2>Employment History</h2>
+    <?php if(empty($employment)): ?>
+        <p>No employment history added.</p>
+    <?php else: ?>
+        <ul>
+            <?php foreach($employment as $job): ?>
+                <li>
+                    <strong><?php echo $job->job_title; ?></strong> at <?php echo $job->company_name; ?><br>
+                    <?php echo $job->start_date; ?> to 
+                    <?php echo $job->currently_working ? 'Present' : $job->end_date; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
     <br>
     <div style="margin-top: 20px; padding: 10px; background: #f4f4f4;">
         <a href="<?php echo base_url('index.php/profile/edit'); ?>">Edit My Profile</a> | 

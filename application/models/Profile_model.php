@@ -31,4 +31,11 @@ class Profile_model extends CI_Model {
     public function insert_licence($data) {
         return $this->db->insert('licences', $data);
     }
+    public function get_employment($user_id) {
+        return $this->db->get_where('employment', array('user_id' => $user_id))->result();
+    }
+
+    public function insert_employment($data) {
+        return $this->db->insert('employment', $data);
+    }
 }
