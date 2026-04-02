@@ -12,7 +12,7 @@ class Marketplace_model extends CI_Model {
     }
 
     public function get_top_bidders($limit = 3) {
-        $this->db->select('users.email, bids.amount, bids.bid_time, profiles.full_name');
+        $this->db->select('bids.user_id, users.email, bids.amount, bids.bid_time, profiles.full_name');
         $this->db->from('bids');
         $this->db->join('users', 'users.id = bids.user_id');
         $this->db->join('profiles', 'profiles.user_id = bids.user_id');
