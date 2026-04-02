@@ -38,4 +38,17 @@ class Marketplace_model extends CI_Model {
         $this->db->distinct();
         return $this->db->get()->result();
     }
+
+    public function reset_bidding_cycle() {
+        $top_3 = $this->get_top_bidders(3);
+
+        if (!empty($top_3)) {
+            foreach ($top_3 as $winner) {
+                $this->db->set('appearance_count', 'appearance_count + 1', FALSE);
+                $this->db->where('user_id', $winner->user_id);
+                $this->db->update('profiles');
+            }
+        }
+        return $this->db->empty_table('bids');
+    }
 }
