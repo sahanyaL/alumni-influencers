@@ -38,4 +38,10 @@ class Profile_model extends CI_Model {
     public function insert_employment($data) {
         return $this->db->insert('employment', $data);
     }
+
+    public function update_profile_image($user_id, $file_name) {
+        $this->db->set('profile_image', $file_name);
+        $this->db->where('user_id', $user_id);
+        return $this->db->update('profiles');
+    }
 }

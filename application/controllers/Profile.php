@@ -128,4 +128,26 @@ class Profile extends CI_Controller {
             redirect('profile/dashboard');
         }
     }
+    public function upload_photo() {
+        $config['upload_path']          = './uploads/profiles/';
+        $config['allowed_types']        = 'gif|jpg|png|jpeg';
+        $config['max_size']             = 2048;
+        $config['file_name']            = 'user_' . $this->session->userdata('user_id') . '_' . time();
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('userfile')) {
+            $error = array('error' => $this->upload->display_errors());
+            $this->session->set_flashdata('error', $this->upload->display_errors());
+            redirect('profile/edit');
+        } else {
+            $data = $this->upload->data();
+            $file_name = $data['file_name'];
+            
+            $this->Profile_model->update_profile_image($this->session->userdata('user_id'), $file_name);
+            
+            $this->session->set_flashdata('success', 'Profile photo updated!');
+            redirect('profile/dashboard');
+        }
+    }
 }

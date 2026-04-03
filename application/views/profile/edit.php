@@ -99,5 +99,14 @@
         };
     </script>
 
+    <br><hr><br>
+    <fieldset>
+        <legend><h3>Update Profile Photo</h3></legend>
+        <?php echo form_open_multipart('profile/upload_photo'); ?>
+            <input type="file" name="userfile" size="20" required /><br><br>
+            <button type="submit">Upload Photo</button>
+        <?php echo form_close(); ?>
+    </fieldset>
+
 </body>
 </html>

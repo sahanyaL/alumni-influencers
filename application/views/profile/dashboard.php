@@ -8,6 +8,12 @@
     <p>Logged in as: <strong><?php echo $this->session->userdata('email'); ?></strong></p>
     <hr>
 
+    <div class="profile-header">
+        <img src="<?php echo base_url('uploads/profiles/' . ($profile->profile_image ? $profile->profile_image : 'default.png')); ?>" 
+            alt="Profile Image" 
+            style="width:150px; height:150px; border-radius:50%; object-fit:cover; border: 2px solid #333;">
+    </div>
+
     <h2>Personal Information</h2>
     <p><strong>Full Name:</strong> <?php echo $profile->full_name ? $profile->full_name : 'Not set'; ?></p>
     <p><strong>Bio:</strong> <?php echo $profile->bio ? $profile->bio : 'No biography added yet.'; ?></p>
