@@ -5,6 +5,16 @@ class Admin extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+        
+        if (!$this->session->userdata('logged_in')) {
+            redirect('auth/login');
+        }
+
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Access Denied: Admins Only.');
+            redirect('profile/dashboard');
+        }
+
         $this->load->model('Marketplace_model');
     }
 

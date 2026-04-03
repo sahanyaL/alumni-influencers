@@ -19,7 +19,7 @@ class Auth extends CI_Controller {
         } else {
             $data = array(
                 'email' => $this->input->post('email'),
-                'password_hash' => password_hash($this->input->post('password'), PASSWORD_BCRYPT),
+                'password' => password_hash($this->input->post('password'), PASSWORD_BCRYPT),
                 'verification_token' => bin2hex(random_bytes(16)),
                 'is_verified' => 0
             );
@@ -53,21 +53,21 @@ class Auth extends CI_Controller {
 
             $user = $this->User_model->get_user_by_email($email);
 
-            if ($user && password_verify($password, $user->password_hash)) {
-                if ($user->is_verified == 0) {
-                    $this->session->set_flashdata('error', 'Please verify your email before logging in.');
-                    redirect('auth/login');
-                }
-
+            if ($user && password_verify($password, $user->password)) {
                 $session_data = array(
-                    'user_id' => $user->id,
-                    'email' => $user->email,
+                    'user_id'   => $user->id,
+                    'email'     => $user->email,
+                    'role'      => $user->role,
                     'logged_in' => TRUE
                 );
                 $this->session->set_userdata($session_data);
-
-                redirect('profile/dashboard'); 
-            } else {
+                
+                if ($user->role === 'admin') {
+                    redirect('admin/dashboard');
+                } else {
+                    redirect('profile/dashboard');
+                }
+            }else {
                 $this->session->set_flashdata('error', 'Invalid Email or Password');
                 redirect('auth/login');
             }

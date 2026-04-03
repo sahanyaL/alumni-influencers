@@ -18,7 +18,8 @@ class User_model extends CI_Model {
         return $this->db->trans_status();
     }
     public function get_user_by_email($email) {
-        $query = $this->db->get_where('users', array('email' => $email));
+        $this->db->where('email', $email);
+        $query = $this->db->get('users');
         return $query->row(); 
     }
     public function get_user_by_token($token) {
