@@ -21,6 +21,7 @@
         <?php else: ?>
             <?php foreach($featured_alumni as $alumnus): ?>
                 <div class="alumnus-card">
+                    <img src="<?php echo base_url('uploads/profiles/' . ($alumnus->profile_image ? $alumnus->profile_image : 'default.png')); ?>" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
                     <h3><?php echo $alumnus->full_name ? $alumnus->full_name : 'Anonymous'; ?></h3>
                     <p>Professional Influencer</p>
                     <a href="<?php echo base_url('index.php/home/view_profile/' . $alumnus->user_id); ?>">View Full Profile</a>
