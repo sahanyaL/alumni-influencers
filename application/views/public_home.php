@@ -2,6 +2,16 @@
 <html>
 <head>
     <title>Alumni Influencers - Home</title>
+    <div style="background: #f9f9f9; padding: 20px; border: 1px solid #ddd; margin-bottom: 30px; text-align: center;">
+        <?php if(!$this->session->userdata('logged_in')): ?>
+            <h3>Are you an Alumnus?</h3>
+            <p>Join the marketplace and boost your professional visibility.</p>
+            <a href="<?php echo base_url('index.php/auth/login'); ?>" style="font-weight:bold;">Login</a> | 
+            <a href="<?php echo base_url('index.php/auth/register'); ?>" style="font-weight:bold;">Register</a>
+        <?php else: ?>
+            <p>Welcome back! <a href="<?php echo base_url('index.php/profile/dashboard'); ?>">Go to your Dashboard</a></p>
+        <?php endif; ?>
+    </div>
     <style>
         .featured-container { display: flex; gap: 20px; margin-top: 20px; }
         .alumnus-card { border: 2px solid #333; padding: 15px; width: 30%; }
@@ -38,6 +48,5 @@
         </form>
     </div>
 
-    <p><a href="<?php echo base_url('index.php/auth/login'); ?>">Alumni Login</a></p>
 </body>
 </html>

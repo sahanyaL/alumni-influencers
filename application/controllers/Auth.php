@@ -91,4 +91,10 @@ class Auth extends CI_Controller {
             redirect('auth/login');
         }
     }
+    public function logout() {
+        $this->session->sess_destroy();
+        $this->session->set_flashdata('success', 'You have been logged out successfully.');
+    
+        redirect('auth/login');
+    }
 }
