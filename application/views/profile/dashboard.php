@@ -106,5 +106,12 @@
         OPEN MARKETPLACE
         </a>
     </div>
+
+     <nav style="background: #f4f4f4; padding: 10px; margin-bottom: 20px; border-bottom: 1px solid #ccc;">
+        <a href="<?php echo base_url('index.php/home'); ?>" style="margin-right: 15px; font-weight: bold; color: #007bff;">
+            View Home Page
+        </a>
+    </nav>
+    
 </body>
 </html>

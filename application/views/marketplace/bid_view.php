@@ -22,34 +22,6 @@
         <p class="success"><?php echo $this->session->flashdata('success'); ?></p>
     <?php endif; ?>
 
-    <h3>Current Top Bidders (Featured Spots)</h3>
-    <table class="leaderboard">
-        <thead>
-            <tr>
-                <th>Rank</th>
-                <th>Alumnus Name</th>
-                <th>Bid Amount (LKR)</th>
-                <th>Time Placed</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if(empty($top_bids)): ?>
-                <tr><td colspan="4">No bids placed yet. Be the first!</td></tr>
-            <?php else: ?>
-                <?php $rank = 1; foreach($top_bids as $bid): ?>
-                    <tr class="<?php echo ($rank <= 3) ? 'top-3' : ''; ?>">
-                        <td><?php echo $rank; ?></td>
-                        <td><?php echo $bid->full_name ? $bid->full_name : 'Anonymous'; ?></td>
-                        <td>Rs. <?php echo number_format($bid->amount, 2); ?></td>
-                        <td><?php echo date('H:i:s d-m-Y', strtotime($bid->bid_time)); ?></td>
-                    </tr>
-                <?php $rank++; endforeach; ?>
-            <?php endif; ?>
-        </tbody>
-    </table>
-
-    <hr>
-
     <h3>Place Your Bid</h3>
     <p><small>Note: You must bid higher than the 3rd rank to be featured on the homepage.</small></p>
     
