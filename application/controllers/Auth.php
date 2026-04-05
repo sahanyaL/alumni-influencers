@@ -52,8 +52,13 @@ class Auth extends CI_Controller {
             $password = $this->input->post('password');
 
             $user = $this->User_model->get_user_by_email($email);
-
             if ($user && password_verify($password, $user->password)) {
+                
+                if ($user->is_verified == 0) {
+                    $this->session->set_flashdata('error', 'Your account is not verified. Please check your email.');
+                    redirect('auth/login');
+                    return; 
+                }
                 $session_data = array(
                     'user_id'   => $user->id,
                     'email'     => $user->email,
@@ -67,7 +72,7 @@ class Auth extends CI_Controller {
                 } else {
                     redirect('profile/dashboard');
                 }
-            }else {
+            } else {
                 $this->session->set_flashdata('error', 'Invalid Email or Password');
                 redirect('auth/login');
             }
