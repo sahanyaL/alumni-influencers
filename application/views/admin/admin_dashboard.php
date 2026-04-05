@@ -26,5 +26,24 @@
             </button>
         </form>
     </div>
+
+    <hr>
+    <div style="margin-top: 30px; padding: 20px; border: 1px solid #333; background: #f9f9f9;">
+        <h3>Developer & API Management</h3>
+        <p>Manage security tokens and monitor AR client usage statistics.</p>
+        
+        <ul style="line-height: 2;">
+            <li>
+                <a href="<?php echo base_url('index.php/admin/manage_api'); ?>" style="font-weight: bold; color: blue;">
+                    Manage API Keys & View Usage Stats
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo base_url('index.php/api/docs'); ?>" target="_blank" style="font-weight: bold; color: green;">
+                    Open Interactive API Documentation (Swagger UI)
+                </a>
+            </li>
+        </ul>
+    </div>
 </body>
 </html>
