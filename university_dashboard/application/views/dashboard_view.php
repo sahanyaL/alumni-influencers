@@ -64,7 +64,6 @@
                             <strong>Most Popular Certifications vs. Curriculum</strong>
                         </div>
                         <div class="card-body">
-                            <!-- THIS IS WHERE OUR CHART WILL DRAW -->
                             <canvas id="skillsGapChart" height="120"></canvas>
                         </div>
                     </div>
@@ -82,30 +81,42 @@
             </div>
             <!-- Second Row: Additional Analytics -->
             <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card shadow-sm">
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
                         <div class="card-header bg-white">
-                            <strong>Top Alumni Employers</strong>
+                            <strong><i class="bi bi-pie-chart-fill me-2 text-primary"></i> Top Alumni Employers</strong>
                         </div>
-                        <div class="card-body d-flex justify-content-center">
-                            <!-- Doughnut Chart Canvas -->
-                            <canvas id="employersChart" style="max-height: 300px;"></canvas>
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <canvas id="employersChart" style="max-height: 300px; width: 100%;"></canvas>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-white">
+                            <strong><i class="bi bi-globe-americas me-2 text-success"></i> Geographic Distribution</strong>
+                        </div>
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <canvas id="geoChart" style="max-height: 300px; width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
     </div>
 </div>
-<!-- Analytics & Chart Script (Secure Live API Data) -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     
-    // 1. Grab the canvas element
+    // ==========================================
+    // 1. SKILLS GAP BAR CHART
+    // ==========================================
     const ctx = document.getElementById('skillsGapChart').getContext('2d');
 
-    // 2. FETCH SECURE LIVE DATA FROM CW1 API
     fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_certification_trends', {
         method: 'GET',
         headers: {
@@ -114,16 +125,14 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error(`API rejected request with status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`API rejected request: ${response.status}`);
         return response.json();
     })
     .then(apiData => {
         const chartLabels = apiData.map(item => item.label);
         const chartCounts = apiData.map(item => parseInt(item.count));
 
-        const skillsChart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: chartLabels,
@@ -138,41 +147,29 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { display: false } 
-                },
+                plugins: { legend: { display: false } },
                 scales: {
-                    x: {
-                        ticks: {
-                            maxRotation: 0, 
-                            minRotation: 0
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Total Certifications' }
-                    }
+                    x: { ticks: { maxRotation: 0, minRotation: 0 } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Total Certifications' } }
                 }
             }
         });
 
-        // 4. Update the "Key Insight" box dynamically
         if(chartCounts.length > 0) {
             const maxCount = Math.max(...chartCounts);
             const topIndex = chartCounts.indexOf(maxCount);
             const topCert = chartLabels[topIndex];
 
+            // Updated to look for the new .insight-box class!
             const insightText = document.querySelector('.insight-box .card-body p');
             insightText.innerHTML = `Based on live secure data, the #1 certification alumni are getting is <strong>${topCert}</strong> (${maxCount} alumni).`;
         }
-        
     })
-    .catch(error => {
-        console.error("Error fetching API data:", error);
-        document.querySelector('.bg-primary .card-body p').innerHTML = "Could not load insights. Ensure API is running and token is valid.";
-    });
+    .catch(error => console.error("Error fetching Certs:", error));
 
-    // --- TOP EMPLOYERS DOUGHNUT CHART ---
+    // ==========================================
+    // 2. TOP EMPLOYERS DOUGHNUT CHART
+    // ==========================================
     const ctxEmployers = document.getElementById('employersChart').getContext('2d');
 
     fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_top_employers', {
@@ -188,31 +185,61 @@ document.addEventListener("DOMContentLoaded", function() {
         const empCounts = apiData.map(item => parseInt(item.count));
 
         new Chart(ctxEmployers, {
-            type: 'doughnut', 
+            type: 'doughnut',
             data: {
                 labels: empLabels,
                 datasets: [{
                     data: empCounts,
-                    backgroundColor: [
-                        'rgba(13, 110, 253, 0.9)',  // Blue
-                        'rgba(25, 135, 84, 0.9)',   // Green
-                        'rgba(255, 193, 7, 0.9)',   // Yellow
-                        'rgba(220, 53, 69, 0.9)',   // Red
-                        'rgba(13, 202, 240, 0.9)'   // Cyan
-                    ],
+                    backgroundColor: ['rgba(13, 110, 253, 0.9)', 'rgba(25, 135, 84, 0.9)', 'rgba(255, 193, 7, 0.9)', 'rgba(220, 53, 69, 0.9)', 'rgba(13, 202, 240, 0.9)'],
                     borderWidth: 2,
                     borderColor: '#ffffff'
                 }]
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'right' }
-                }
-            }
+            options: { responsive: true, plugins: { legend: { position: 'right' } } }
         });
     })
     .catch(error => console.error("Error loading employers:", error));
+
+    // ==========================================
+    // 3. GEOGRAPHIC DISTRIBUTION CHART (New!)
+    // ==========================================
+    const ctxGeo = document.getElementById('geoChart').getContext('2d');
+
+    fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_geographic_distribution', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer DASHBOARD-SECRET-TOKEN-999',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(apiData => {
+        const geoLabels = apiData.map(item => item.label);
+        const geoCounts = apiData.map(item => parseInt(item.count));
+
+        new Chart(ctxGeo, {
+            type: 'bar', 
+            data: {
+                labels: geoLabels,
+                datasets: [{
+                    label: 'Alumni Count',
+                    data: geoCounts,
+                    backgroundColor: 'rgba(25, 135, 84, 0.8)', 
+                    borderColor: 'rgba(25, 135, 84, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            }
+        });
+    })
+    .catch(error => console.error("Error loading geographic data:", error));
+
 });
 </script>
 
