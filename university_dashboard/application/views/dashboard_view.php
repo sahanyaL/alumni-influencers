@@ -6,13 +6,32 @@
     <title>University Intelligence Dashboard</title>
     <!-- Bootstrap for Layout -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap for Layout -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Chart.js for Analytics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .sidebar { height: 100vh; background-color: #212529; color: white; padding-top: 20px; }
-        .sidebar a { color: #adb5bd; text-decoration: none; padding: 10px 15px; display: block; }
-        .sidebar a:hover { color: white; background-color: #343a40; }
-        .main-content { padding: 30px; background-color: #f8f9fa; min-height: 100vh; }
+        /* Global Softer Background */
+        body { background-color: #f4f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        /* Modern Sidebar */
+        .sidebar { height: 100vh; background: linear-gradient(180deg, #212529 0%, #15181a 100%); color: white; padding-top: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+        .sidebar a { color: #adb5bd; text-decoration: none; padding: 12px 20px; display: block; margin: 5px 10px; border-radius: 8px; transition: all 0.2s ease-in-out; }
+        .sidebar a:hover:not(.active) { color: white; background-color: rgba(255,255,255,0.05); transform: translateX(5px); }
+        .sidebar a.active { color: white; background-color: #0d6efd; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.4); }
+        
+        /* Floating Cards */
+        .main-content { padding: 40px; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+        .card-header { border-bottom: 1px solid rgba(0,0,0,0.05); font-weight: 600; color: #495057; border-top-left-radius: 12px !important; border-top-right-radius: 12px !important; }
+        
+        /* Insight Box Glow */
+        .insight-box { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); border: none; }
     </style>
 </head>
 <body>
@@ -21,13 +40,13 @@
     <div class="row">
         <!-- Sidebar Navigation -->
         <div class="col-md-2 sidebar">
-            <h5 class="text-center mb-4">Uni-Analytics</h5>
-            <a href="#" class="text-white bg-dark">Skills Gap Trends</a>
-            <a href="#">Top Employers</a>
-            <a href="#">Geographic Dist.</a>
-            <hr class="bg-secondary">
-            <small class="px-3 text-muted">Logged in as:<br><?= $admin_email; ?></small>
-            <a href="<?= base_url('Auth/logout'); ?>" class="text-danger mt-3"> Logout</a>
+            <h5 class="text-center mb-4 fw-bold tracking-wide">Uni-Analytics</h5>
+            <a href="#" class="active"><i class="bi bi-bar-chart-fill me-2"></i> Skills Gap</a>
+            <a href="#"><i class="bi bi-pie-chart-fill me-2"></i> Top Employers</a>
+            <a href="#"><i class="bi bi-globe-americas me-2"></i> Geographic Dist.</a>
+            <hr class="bg-secondary opacity-25 mt-4 mb-4">
+            <small class="px-3 text-muted d-block text-truncate">Logged in as:<br><?= $admin_email; ?></small>
+            <a href="<?= base_url('Auth/logout'); ?>" class="text-danger mt-3 hover-danger"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
         </div>
 
         <!-- Main Content Area -->
@@ -53,10 +72,10 @@
                 
                 <!-- Insights Card -->
                 <div class="col-md-4">
-                    <div class="card shadow-sm bg-primary text-white">
-                        <div class="card-body">
-                            <h5>Key Insight</h5>
-                            <p>Once we connect the API, this box will highlight the #1 certification alumni are forced to get after graduation.</p>
+                    <div class="card insight-box text-white shadow-lg h-100">
+                        <div class="card-body p-4 d-flex flex-column justify-content-center">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb me-2 text-warning"></i> Key Insight</h5>
+                            <p class="mb-0 fs-6 lh-lg">Once we connect the API, this box will highlight the #1 certification alumni are forced to get after graduation.</p>
                         </div>
                     </div>
                 </div>
@@ -143,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const topIndex = chartCounts.indexOf(maxCount);
             const topCert = chartLabels[topIndex];
 
-            const insightText = document.querySelector('.bg-primary .card-body p');
+            const insightText = document.querySelector('.insight-box .card-body p');
             insightText.innerHTML = `Based on live secure data, the #1 certification alumni are getting is <strong>${topCert}</strong> (${maxCount} alumni).`;
         }
         
