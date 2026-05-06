@@ -15,7 +15,7 @@ class Api extends CI_Controller {
             exit;
         }
         
-        if ($this->uri->segment(2) === 'docs' || $this->uri->segment(2) === 'get_certification_trends') {
+        if ($this->uri->segment(2) === 'docs') {
             return; 
         }
 

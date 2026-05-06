@@ -65,64 +65,79 @@
         </div>
     </div>
 </div>
-<!-- Analytics & Chart Script (Live API Data) -->
+<!-- Analytics & Chart Script (Secure Live API Data) -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     
     // 1. Grab the canvas element
     const ctx = document.getElementById('skillsGapChart').getContext('2d');
 
-    fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_certification_trends')
-        .then(response => response.json())
-        .then(apiData => {
-            
-            // Extract labels (cert names) and counts from the JSON array
-            const chartLabels = apiData.map(item => item.label);
-            const chartCounts = apiData.map(item => parseInt(item.count)); // Parse to integer
+    // 2. FETCH SECURE LIVE DATA FROM CW1 API
+    fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_certification_trends', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer DASHBOARD-SECRET-TOKEN-999',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`API rejected request with status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(apiData => {
+        const chartLabels = apiData.map(item => item.label);
+        const chartCounts = apiData.map(item => parseInt(item.count));
 
-            // 3. Draw the Chart using live data
-            const skillsChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: 'Number of Alumni Graduates',
-                        data: chartCounts,
-                        backgroundColor: 'rgba(13, 110, 253, 0.8)', 
-                        borderColor: 'rgba(13, 110, 253, 1)',
-                        borderWidth: 1,
-                        borderRadius: 4 
-                    }]
+        const skillsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Number of Alumni Graduates',
+                    data: chartCounts,
+                    backgroundColor: 'rgba(13, 110, 253, 0.8)', 
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4 
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false } 
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false } 
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: { display: true, text: 'Total Certifications' }
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 0, 
+                            minRotation: 0
                         }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Total Certifications' }
                     }
                 }
-            });
-
-            // 4. Update the "Key Insight" box dynamically
-            if(chartCounts.length > 0) {
-                const maxCount = Math.max(...chartCounts);
-                const topIndex = chartCounts.indexOf(maxCount);
-                const topCert = chartLabels[topIndex];
-
-                const insightText = document.querySelector('.bg-primary .card-body p');
-                insightText.innerHTML = `Based on live data, the #1 certification alumni are getting is <strong>${topCert}</strong> (${maxCount} alumni).`;
             }
-            
-        })
-        .catch(error => {
-            console.error("Error fetching API data:", error);
-            document.querySelector('.bg-primary .card-body p').innerHTML = "Could not load insights. Ensure API is running.";
         });
+
+        // 4. Update the "Key Insight" box dynamically
+        if(chartCounts.length > 0) {
+            const maxCount = Math.max(...chartCounts);
+            const topIndex = chartCounts.indexOf(maxCount);
+            const topCert = chartLabels[topIndex];
+
+            const insightText = document.querySelector('.bg-primary .card-body p');
+            insightText.innerHTML = `Based on live secure data, the #1 certification alumni are getting is <strong>${topCert}</strong> (${maxCount} alumni).`;
+        }
+        
+    })
+    .catch(error => {
+        console.error("Error fetching API data:", error);
+        document.querySelector('.bg-primary .card-body p').innerHTML = "Could not load insights. Ensure API is running and token is valid.";
+    });
 });
 </script>
 
