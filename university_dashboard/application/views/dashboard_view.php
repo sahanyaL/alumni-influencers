@@ -61,6 +61,20 @@
                     </div>
                 </div>
             </div>
+            <!-- Second Row: Additional Analytics -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <strong>Top Alumni Employers</strong>
+                        </div>
+                        <div class="card-body d-flex justify-content-center">
+                            <!-- Doughnut Chart Canvas -->
+                            <canvas id="employersChart" style="max-height: 300px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>
@@ -138,6 +152,48 @@ document.addEventListener("DOMContentLoaded", function() {
         console.error("Error fetching API data:", error);
         document.querySelector('.bg-primary .card-body p').innerHTML = "Could not load insights. Ensure API is running and token is valid.";
     });
+
+    // --- TOP EMPLOYERS DOUGHNUT CHART ---
+    const ctxEmployers = document.getElementById('employersChart').getContext('2d');
+
+    fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_top_employers', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer DASHBOARD-SECRET-TOKEN-999',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(apiData => {
+        const empLabels = apiData.map(item => item.label);
+        const empCounts = apiData.map(item => parseInt(item.count));
+
+        new Chart(ctxEmployers, {
+            type: 'doughnut', 
+            data: {
+                labels: empLabels,
+                datasets: [{
+                    data: empCounts,
+                    backgroundColor: [
+                        'rgba(13, 110, 253, 0.9)',  // Blue
+                        'rgba(25, 135, 84, 0.9)',   // Green
+                        'rgba(255, 193, 7, 0.9)',   // Yellow
+                        'rgba(220, 53, 69, 0.9)',   // Red
+                        'rgba(13, 202, 240, 0.9)'   // Cyan
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
+    })
+    .catch(error => console.error("Error loading employers:", error));
 });
 </script>
 

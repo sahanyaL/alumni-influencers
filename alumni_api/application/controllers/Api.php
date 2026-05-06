@@ -95,4 +95,22 @@ class Api extends CI_Controller {
         // 3. Output the result as raw JSON
         echo json_encode($query->result());
     }
+
+    public function get_top_employers() {
+        // 1. CORS Headers
+        header('Access-Control-Allow-Origin: *');
+        header('Content-Type: application/json');
+
+        // 2. Query the employment table
+        $this->db->select('company_name as label, COUNT(id) as count');
+        $this->db->from('employment');
+        $this->db->group_by('company_name');
+        $this->db->order_by('count', 'DESC');
+        $this->db->limit(5); // Top 5 employers
+        
+        $query = $this->db->get();
+
+        // 3. Output JSON
+        echo json_encode($query->result());
+    }
 }
