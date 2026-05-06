@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Chart.js for Analytics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         /* Global Softer Background */
         body { background-color: #f4f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -32,6 +34,7 @@
         
         /* Insight Box Glow */
         .insight-box { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); border: none; }
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body>
@@ -41,22 +44,22 @@
         <!-- Sidebar Navigation -->
         <div class="col-md-2 sidebar">
             <h5 class="text-center mb-4 fw-bold tracking-wide">Uni-Analytics</h5>
-            <a href="#" class="active"><i class="bi bi-bar-chart-fill me-2"></i> Skills Gap</a>
-            <a href="#"><i class="bi bi-pie-chart-fill me-2"></i> Top Employers</a>
-            <a href="#"><i class="bi bi-globe-americas me-2"></i> Geographic Dist.</a>
+            <a href="#skillsRow" class="dash-link active"><i class="bi bi-bar-chart-fill me-2"></i> Skills Gap</a>
+            <a href="#employersRow" class="dash-link"><i class="bi bi-pie-chart-fill me-2"></i> Top Employers</a>
+            <a href="#employersRow" class="dash-link"><i class="bi bi-globe-americas me-2"></i> Geographic Dist.</a>
             <hr class="bg-secondary opacity-25 mt-4 mb-4">
             <small class="px-3 text-muted d-block text-truncate">Logged in as:<br><?= $admin_email; ?></small>
             <a href="<?= base_url('Auth/logout'); ?>" class="text-danger mt-3 hover-danger"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
         </div>
 
         <!-- Main Content Area -->
-        <div class="col-md-10 main-content">
+        <div class="col-md-10 main-content" id="dashboardContent">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>Alumni Skills Gap Analysis</h2>
-                <button class="btn btn-outline-primary">Export Report (PDF)</button>
+                <button id="exportPdfBtn" class="btn btn-outline-primary"><i class="bi bi-file-earmark-pdf me-2"></i>Export Report (PDF)</button>
             </div>
 
-            <div class="row">
+            <div class="row" id="skillsRow">
                 <!-- The Chart Card -->
                 <div class="col-md-8">
                     <div class="card shadow-sm">
@@ -80,7 +83,7 @@
                 </div>
             </div>
             <!-- Second Row: Additional Analytics -->
-            <div class="row mt-4">
+            <div class="row mt-4" id="employersRow">
                 
                 <div class="col-md-6 mb-4">
                     <div class="card h-100 shadow-sm">
@@ -239,6 +242,54 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     })
     .catch(error => console.error("Error loading geographic data:", error));
+
+    // ==========================================
+    // 4. PDF EXPORT FUNCTIONALITY
+    // ==========================================
+    document.getElementById('exportPdfBtn').addEventListener('click', function() {
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Generating...';
+        btn.classList.add('disabled'); 
+
+        const element = document.getElementById('dashboardContent');
+
+        const originalWidth = element.style.width;
+        element.style.width = '1200px';
+
+        const opt = {
+            margin:       0.3, 
+            filename:     'Alumni_Analytics_Report.pdf',
+            image:        { type: 'jpeg', quality: 1 },
+            html2canvas:  { 
+                scale: 2, 
+                useCORS: true,
+                windowWidth: 1200 
+            },
+            pagebreak:    { mode: 'avoid-all' },
+            jsPDF:        { unit: 'in', format: 'a3', orientation: 'landscape' } 
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Restore normal view
+            btn.innerHTML = originalText;
+            btn.classList.remove('disabled');
+            element.style.width = originalWidth; 
+        });
+    });
+
+    // ==========================================
+    // 5. SIDEBAR NAVIGATION LOGIC
+    // ==========================================
+    const navLinks = document.querySelectorAll('.dash-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // Remove 'active' from all links
+            navLinks.forEach(nav => nav.classList.remove('active'));
+            // Add 'active' to the one just clicked
+            this.classList.add('active');
+        });
+    });
 
 });
 </script>
