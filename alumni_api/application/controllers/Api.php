@@ -15,7 +15,7 @@ class Api extends CI_Controller {
             exit;
         }
         
-        if ($this->uri->segment(2) === 'docs') {
+        if ($this->uri->segment(2) === 'docs' || $this->uri->segment(2) === 'get_certification_trends') {
             return; 
         }
 
@@ -77,5 +77,22 @@ class Api extends CI_Controller {
     }
     public function docs() {
         $this->load->view('api_docs');
+    }
+    public function get_certification_trends() {
+        // 1. Set headers so the dashboard is allowed to read this data (CORS)
+        header('Access-Control-Allow-Origin: *');
+        header('Content-Type: application/json');
+
+        // 2. Query the database using your exact column name 'cert_name'
+        $this->db->select('cert_name as label, COUNT(id) as count');
+        $this->db->from('certifications');
+        $this->db->group_by('cert_name');
+        $this->db->order_by('count', 'DESC');
+        $this->db->limit(5); 
+        
+        $query = $this->db->get();
+
+        // 3. Output the result as raw JSON
+        echo json_encode($query->result());
     }
 }
