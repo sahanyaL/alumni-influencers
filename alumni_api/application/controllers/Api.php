@@ -52,23 +52,30 @@ class Api extends CI_Controller {
     }
 
     public function featured_alumnus() {
-        $winner = $this->Marketplace_model->get_top_bidders(1);
+        // Fetch ONLY the user marked as featured by the Cron script
+        header('Access-Control-Allow-Origin: *');
+        header('Content-Type: application/json');
 
-        if (!empty($winner)) {
-            $alumnus = $winner[0];
-            
+        $this->db->select('p.user_id, p.full_name, p.profile_image, b.amount as bid_amount');
+        $this->db->from('profiles p');
+        $this->db->join('bids b', 'b.user_id = p.user_id', 'left');
+        $this->db->where('p.is_featured', 1);
+        $this->db->order_by('b.amount', 'DESC'); 
+        $this->db->limit(1);
+        $alumnus = $this->db->get()->row();
+
+        if (!empty($alumnus)) {
             $response = [
                 'status' => 'success',
                 'data' => [
                     'id' => $alumnus->user_id,
                     'name' => $alumnus->full_name,
                     'image_url' => base_url('uploads/profiles/' . ($alumnus->profile_image ? $alumnus->profile_image : 'default.png')),
-                    'bid_amount' => $alumnus->amount,
+                    'bid_amount' => $alumnus->bid_amount,
                     'profile_link' => base_url('index.php/home/view_profile/' . $alumnus->user_id)
                 ],
                 'timestamp' => date('Y-m-d H:i:s')
             ];
-            
             echo json_encode($response);
         } else {
             $this->output->set_status_header(404);

@@ -6,7 +6,18 @@ class Home extends CI_Controller {
     public function index() {
         $this->load->model('Marketplace_model');
 
-        $data['featured_alumni'] = $this->Marketplace_model->get_top_bidders(3);
+        // 1. Fetch ONLY the user marked as featured by the Cron script
+        $this->db->select('p.user_id, p.full_name, p.profile_image, p.bio, b.amount as bid_amount');
+        $this->db->from('profiles p');
+        $this->db->join('bids b', 'b.user_id = p.user_id', 'left');
+        $this->db->where('p.is_featured', 1);
+        $this->db->order_by('b.amount', 'DESC');
+        $this->db->limit(1);
+        $featured = $this->db->get()->row();
+
+        // 2. Wrap the single winner in an array. 
+        $data['featured_alumni'] = $featured ? array($featured) : array();
+        
         $this->load->view('public_home', $data);
     }
     public function view_profile($user_id) {
