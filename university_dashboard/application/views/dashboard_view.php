@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_certification_trends', {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer DASHBOARD-SECRET-TOKEN-999',
+            'Authorization': 'Bearer 7bfcc38579d977c427e7a12b1d7ee3dc',
             'Content-Type': 'application/json'
         }
     })
@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_top_employers', {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer DASHBOARD-SECRET-TOKEN-999',
+            'Authorization': 'Bearer 7bfcc38579d977c427e7a12b1d7ee3dc',
             'Content-Type': 'application/json'
         }
     })
@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_geographic_distribution', {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer DASHBOARD-SECRET-TOKEN-999',
+            'Authorization': 'Bearer 7bfcc38579d977c427e7a12b1d7ee3dc',
             'Content-Type': 'application/json'
         }
     })
