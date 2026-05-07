@@ -112,7 +112,25 @@
         </div>
     </div>
 </div>
+
+<?php
+$env_path = FCPATH . '.env';
+
+if (file_exists($env_path)) {
+    $env = parse_ini_file($env_path);
+    $api_url = $env['API_BASE_URL'];
+    $api_token = $env['API_TOKEN'];
+} else {
+    $api_url = "ERROR_ENV_MISSING";
+    $api_token = "ERROR_ENV_MISSING";
+}
+?>
+
 <script>
+// 3. Inject the secure variables into Javascript
+const API_URL = "<?= $api_url ?>";
+const API_TOKEN = "<?= $api_token ?>";
+
 document.addEventListener("DOMContentLoaded", function() {
     
     // ==========================================
@@ -120,10 +138,11 @@ document.addEventListener("DOMContentLoaded", function() {
     // ==========================================
     const ctx = document.getElementById('skillsGapChart').getContext('2d');
 
-    fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_certification_trends', {
+    // Use the dynamic variables instead of hardcoded strings
+    fetch(API_URL + 'get_certification_trends', {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer 7bfcc38579d977c427e7a12b1d7ee3dc',
+            'Authorization': 'Bearer ' + API_TOKEN,
             'Content-Type': 'application/json'
         }
     })
@@ -163,7 +182,6 @@ document.addEventListener("DOMContentLoaded", function() {
             const topIndex = chartCounts.indexOf(maxCount);
             const topCert = chartLabels[topIndex];
 
-            // Updated to look for the new .insight-box class!
             const insightText = document.querySelector('.insight-box .card-body p');
             insightText.innerHTML = `Based on live secure data, the #1 certification alumni are getting is <strong>${topCert}</strong> (${maxCount} alumni).`;
         }
@@ -175,10 +193,11 @@ document.addEventListener("DOMContentLoaded", function() {
     // ==========================================
     const ctxEmployers = document.getElementById('employersChart').getContext('2d');
 
-    fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_top_employers', {
+    // Use the dynamic variables
+    fetch(API_URL + 'get_top_employers', {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer 7bfcc38579d977c427e7a12b1d7ee3dc',
+            'Authorization': 'Bearer ' + API_TOKEN,
             'Content-Type': 'application/json'
         }
     })
@@ -204,14 +223,15 @@ document.addEventListener("DOMContentLoaded", function() {
     .catch(error => console.error("Error loading employers:", error));
 
     // ==========================================
-    // 3. GEOGRAPHIC DISTRIBUTION CHART (New!)
+    // 3. GEOGRAPHIC DISTRIBUTION CHART
     // ==========================================
     const ctxGeo = document.getElementById('geoChart').getContext('2d');
 
-    fetch('http://127.0.0.1/ALUMNI-INFLUENCERS/alumni_api/Api/get_geographic_distribution', {
+    // Use the dynamic variables
+    fetch(API_URL + 'get_geographic_distribution', {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer 7bfcc38579d977c427e7a12b1d7ee3dc',
+            'Authorization': 'Bearer ' + API_TOKEN,
             'Content-Type': 'application/json'
         }
     })
@@ -253,7 +273,6 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.classList.add('disabled'); 
 
         const element = document.getElementById('dashboardContent');
-
         const originalWidth = element.style.width;
         element.style.width = '1200px';
 
@@ -261,17 +280,12 @@ document.addEventListener("DOMContentLoaded", function() {
             margin:       0.3, 
             filename:     'Alumni_Analytics_Report.pdf',
             image:        { type: 'jpeg', quality: 1 },
-            html2canvas:  { 
-                scale: 2, 
-                useCORS: true,
-                windowWidth: 1200 
-            },
+            html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200 },
             pagebreak:    { mode: 'avoid-all' },
             jsPDF:        { unit: 'in', format: 'a3', orientation: 'landscape' } 
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
-            // Restore normal view
             btn.innerHTML = originalText;
             btn.classList.remove('disabled');
             element.style.width = originalWidth; 
@@ -284,9 +298,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const navLinks = document.querySelectorAll('.dash-link');
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
-            // Remove 'active' from all links
             navLinks.forEach(nav => nav.classList.remove('active'));
-            // Add 'active' to the one just clicked
             this.classList.add('active');
         });
     });
