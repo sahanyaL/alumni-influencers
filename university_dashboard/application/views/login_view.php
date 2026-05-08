@@ -12,7 +12,7 @@
             <div class="col-md-5">
                 <div class="card shadow">
                     <div class="card-header bg-dark text-white text-center">
-                        <h4>University Intelligence Dashboard</h4>
+                        <h4>University Dashboard</h4>
                     </div>
                     <div class="card-body">
                         
@@ -27,7 +27,7 @@
                         <?= form_open('Auth/do_login'); ?>
                             <div class="mb-3">
                                 <label>Staff Email (@westminster.ac.uk)</label>
-                                <input type="email" name="email" class="form-control" required>
+                                <input type="email" name="email" class="form-control" required placeholder="#####@westminster.ac.uk">
                             </div>
                             <div class="mb-3">
                                 <label>Password</label>
@@ -35,6 +35,12 @@
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Secure Login</button>
                         <?= form_close(); ?>
+
+                        <hr class="mt-4">
+                        <div class="text-center">
+                            <p class="text-muted small mb-2">New University Staff member?</p>
+                            <a href="<?= site_url('Auth/register'); ?>" class="btn btn-outline-secondary btn-sm">Create Staff Account</a>
+                        </div>
                         
                     </div>
                 </div>
