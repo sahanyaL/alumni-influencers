@@ -11,13 +11,13 @@ class Marketplace_model extends CI_Model {
         return $query->row()->appearance_count;
     }
 
-    public function get_top_bidders($limit = 3) {
+    public function get_top_bidders() {
         $this->db->select('bids.user_id, users.email, bids.amount, bids.bid_time, profiles.full_name, profiles.profile_image');
         $this->db->from('bids');
         $this->db->join('users', 'users.id = bids.user_id');
         $this->db->join('profiles', 'profiles.user_id = bids.user_id');
         $this->db->order_by('bids.amount', 'DESC');
-        $this->db->limit($limit);
+        $this->db->limit(1); 
         return $this->db->get()->result();
     }
 
@@ -38,17 +38,5 @@ class Marketplace_model extends CI_Model {
         $this->db->distinct();
         return $this->db->get()->result();
     }
-
-    public function reset_bidding_cycle() {
-        $top_3 = $this->get_top_bidders(3);
-
-        if (!empty($top_3)) {
-            foreach ($top_3 as $winner) {
-                $this->db->set('appearance_count', 'appearance_count + 1', FALSE);
-                $this->db->where('user_id', $winner->user_id);
-                $this->db->update('profiles');
-            }
-        }
-        return $this->db->empty_table('bids');
-    }
+    
 }

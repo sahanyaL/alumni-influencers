@@ -1,16 +1,28 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
 class Auth_model extends CI_Model {
 
     public function verify_login($email, $password) {
-        // Fetch user by email
-        $query = $this->db->get_where('dashboard_users', array('email' => $email));
+        
+        // 1. Grab the user data. Notice we are explicitly asking for the 'role' here!
+        $this->db->select('id, email, password, role, is_verified');
+        $this->db->where('email', $email);
+        
+        // 2. Check the main 'users' table (the same one CW1 uses)
+        $query = $this->db->get('users');
         $user = $query->row();
 
-        // If user exists, verify the Bcrypt password
-        if ($user && password_verify($password, $user->password_hash)) {
-            return $user;
+        // 3. If the user exists, verify their hashed password
+        if ($user && password_verify($password, $user->password)) {
+            
+            // 4. Double check that they actually clicked the verification link in their email
+            if ($user->is_verified == 1) {
+                return $user; // Success! Return the user (including their 'staff' role)
+            }
         }
-        
-        return FALSE; // Login failed
+
+        // If they don't exist, password fails, or they aren't verified, return false.
+        return FALSE;
     }
 }

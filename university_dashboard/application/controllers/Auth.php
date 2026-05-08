@@ -24,9 +24,12 @@ class Auth extends CI_Controller {
             redirect('Auth');
         }
 
+        // This checks the shared database for the user
         $user = $this->Auth_model->verify_login($email, $password);
 
-        if ($user) {
+        // SECURITY CHECK: Do they exist AND are they a staff member?
+        if ($user && isset($user->role) && $user->role === 'staff') {
+            
             $session_data = array(
                 'admin_id' => $user->id,
                 'email' => $user->email,
@@ -35,6 +38,11 @@ class Auth extends CI_Controller {
             );
             $this->session->set_userdata($session_data);
             redirect('Dashboard'); 
+            
+        } elseif ($user && $user->role !== 'staff') {
+            // Block normal alumni or developers from accessing the dashboard
+            $this->session->set_flashdata('error', 'Access Denied: You do not have Staff privileges.');
+            redirect('Auth');
         } else {
             $this->session->set_flashdata('error', 'Invalid email or password.');
             redirect('Auth');

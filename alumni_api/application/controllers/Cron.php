@@ -15,13 +15,13 @@ class Cron extends CI_Controller {
         // 1. CLEAR THE BOARD: Remove yesterday's winner
         $this->db->update('profiles', ['is_featured' => 0]);
 
-        // Get today's date (Format: YYYY-MM-DD)
-        $today = date('Y-m-d');
+        //Get YESTERDAY'S date (Format: YYYY-MM-DD)
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
 
-        // 2. FIND THE WINNER: Get the highest bidder FROM TODAY ONLY
+        // 2. FIND THE WINNER: Get the highest bidder FROM YESTERDAY
         $this->db->select('user_id, amount');
         $this->db->from('bids');
-        $this->db->like('bid_time', $today, 'after'); // Only matches bids from today!
+        $this->db->like('bid_time', $yesterday, 'after'); // Only matches bids from yesterday!
         $this->db->order_by('amount', 'DESC');
         $this->db->limit(1);
         $query = $this->db->get();
@@ -36,7 +36,7 @@ class Cron extends CI_Controller {
 
             echo "CRON SUCCESS: User ID " . $winner->user_id . " is the new Alumni of the Day!";
         } else {
-            echo "CRON SUCCESS: No bids found for today. Board cleared.";
+            echo "CRON SUCCESS: No bids found for yesterday. Board cleared.";
         }
     }
 }
